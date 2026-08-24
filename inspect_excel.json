@@ -1,0 +1,59 @@
+{
+  "sheets": [
+    "2021-2022",
+    "2023",
+    " 2024",
+    " OCCI JS 2025",
+    "LOS LLANOS 2025",
+    "OCCIDENTE 2026 ",
+    "LOS LLANOS 2026",
+    "Hoja1"
+  ],
+  "columns_per_sheet": {
+    "2021-2022": [
+      "Unnamed: 0",
+      "Unnamed: 1",
+      "Unnamed: 2",
+      "Unnamed: 3",
+      "Unnamed: 4",
+      "Unnamed: 5",
+      "Unnamed: 6",
+      "Unnamed: 7",
+      "Unnamed: 8",
+      "Unnamed: 9"
+    ],
+    "2023": [
+      "Unnamed: 0",
+      "Unnamed: 1",
+      "Unnamed: 2",
+      "Unnamed: 3",
+      "Unnamed: 4",
+      "Unnamed: 5",
+      "Unnamed: 6",
+      "Unnamed: 7",
+      "Unnamed: 8",
+      "Unnamed: 9"
+    ],
+    " 2024": [
+      "Unnamed: 0",
+      "Unnamed: 1"
+    ],
+    " OCCI JS 2025": [
+      "Unnamed: 0",
+      "Unnamed: 1"
+    ],
+    "LOS LLANOS 2025": [
+      "Unnamed: 0",
+      "Unnamed: 1"
+    ],
+    "OCCIDENTE 2026 ": [
+      "Unnamed: 0",
+      "Unnamed: 1"
+    ],
+    "LOS LLANOS 2026": [
+      "Unnamed: 0",
+      "Unnamed: 1"
+    ],
+    "Hoja1": []
+  }
+}

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search, Activity, Battery, AlertTriangle, Calendar, CheckCircle2, ChevronRight, Zap, MapPin, ChevronDown, Plus, X, BarChart3, Trash2, Edit2, Sun, Moon, User } from 'lucide-react';
+import { Search, Activity, Battery, AlertTriangle, Calendar, CheckCircle2, ChevronRight, Zap, MapPin, ChevronDown, Plus, X, BarChart3, Trash2, Edit2, Sun, Moon, User, Menu } from 'lucide-react';
 import './index.css';
 
 import { supabase } from './lib/supabaseClient';
@@ -56,6 +56,7 @@ function App() {
   const [currentView, setCurrentView] = useState<'dashboard' | 'agencia'>(
     () => (sessionStorage.getItem('currentView') as 'dashboard' | 'agencia') || 'dashboard'
   );
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [theme, setTheme] = useState<'light' | 'dark'>(
     () => (localStorage.getItem('theme') as 'light' | 'dark') || 'light'
@@ -358,7 +359,6 @@ function App() {
     );
   };
 
-  // Handlers
   const handleSelectAgencia = (agencia: Agencia) => {
     const updatedAgencia = localAgenciasData.find(a => a.cod === agencia.cod) || agencia;
     setSelectedAgencia(updatedAgencia);
@@ -366,6 +366,7 @@ function App() {
     setActiveState(updatedAgencia.estado);
     setSearchQuery(''); 
     setCurrentView('agencia');
+    setMobileMenuOpen(false);
   };
 
   const handleStateClick = (estado: string, region: string) => {
@@ -576,20 +577,58 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Mobile Topbar */}
+      <header className="mobile-topbar">
+        <button 
+          className="mobile-nav-btn"
+          onClick={() => setMobileMenuOpen(true)}
+          aria-label="Abrir menú"
+        >
+          <Menu size={24} />
+        </button>
+        <div className="brand" style={{ cursor: 'pointer' }} onClick={() => { setCurrentView('dashboard'); setMobileMenuOpen(false); }}>
+          <Zap className="brand-icon" size={24} />
+          <span>UPS Control</span>
+        </div>
+        <button 
+          onClick={toggleTheme} 
+          className="mobile-nav-btn"
+          title={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+        >
+          {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        </button>
+      </header>
+
+      {/* Sidebar Overlay on Mobile */}
+      <div 
+        className={`sidebar-overlay ${mobileMenuOpen ? 'active' : ''}`} 
+        onClick={() => setMobileMenuOpen(false)} 
+      />
+
       {/* Sidebar Navigation */}
-      <aside className="sidebar">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingRight: '1rem' }}>
-          <div className="brand" style={{ cursor: 'pointer', paddingRight: 0 }} onClick={() => setCurrentView('dashboard')}>
-            <Zap className="brand-icon" size={28} />
+      <aside className={`sidebar ${mobileMenuOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <div className="brand" style={{ cursor: 'pointer' }} onClick={() => { setCurrentView('dashboard'); setMobileMenuOpen(false); }}>
+            <Zap className="brand-icon" size={26} />
             <span>UPS Control</span>
           </div>
-          <button 
-            onClick={toggleTheme} 
-            style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex' }}
-            title={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
-          >
-            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <button 
+              onClick={toggleTheme} 
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', padding: '0.35rem' }}
+              title={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+            >
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+            <button 
+              onClick={() => setMobileMenuOpen(false)}
+              className="mobile-nav-btn mobile-close-btn"
+              style={{ display: mobileMenuOpen ? 'flex' : 'none' }}
+              aria-label="Cerrar menú"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
 
         <div className="search-container">
@@ -606,8 +645,11 @@ function App() {
         <div className="nav-menu">
           <div 
             className={`nav-item ${currentView === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setCurrentView('dashboard')}
-            style={{ marginBottom: '1rem', fontWeight: 600 }}
+            onClick={() => {
+              setCurrentView('dashboard');
+              setMobileMenuOpen(false);
+            }}
+            style={{ marginBottom: '0.75rem', fontWeight: 600 }}
           >
             <BarChart3 size={18} /> Dashboard General
           </div>
@@ -748,7 +790,7 @@ function App() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+            <div className="dashboard-split-grid">
               <div className="card glass-panel" style={{ margin: 0 }}>
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Calendar className="text-warning" /> Próximos Mantenimientos
@@ -842,7 +884,7 @@ function App() {
                   </span>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <div className="header-actions">
                 <div className="glass-panel" style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span className={selectedAgencia.estatus === 'Activa' ? "text-success" : "text-warning"} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 600 }}>
                     <CheckCircle2 size={16} /> {selectedAgencia.estatus}
@@ -1213,7 +1255,7 @@ function App() {
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="modal-form-grid">
                 <div className="form-group">
                   <label>Estatus Textual</label>
                   <input 
